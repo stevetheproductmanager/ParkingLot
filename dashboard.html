@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="="width=device-width, initial-scale=1.0">
+    <title>Stand-up Parking Lot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top */
+            height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-top: 20px; /* Add margin to move it slightly down */
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #4A90E2;
+            display: flex;
+            align-items: center;
+            font-size: 24px; /* Increase header font size */
+        }
+        .header h1 i {
+            margin-right: 10px;
+            font-size: 28px; /* Increase icon size */
+        }
+        .header button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4A90E2;
+            color: white;
+            font-size: 16px; /* Increase button font size */
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .header button:hover {
+            background-color: #357ABD;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .filters select {
+            padding: 8px 15px;
+            border: 1px solid #4A90E2;
+            background-color: #fff;
+            color: #4A90E2;
+            font-size: 16px; /* Increase filter font size */
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .view-toggle {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        .view-toggle i {
+            font-size: 26px; /* Increase view toggle icon size */
+            color: #4A90E2;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: color 0.3s;
+        }
+        .view-toggle i:hover {
+            color: #357ABD;
+        }
+        .view-toggle i.active {
+            color: #357ABD;
+        }
+
+        /* List View Styles */
+        .item-list {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .item-list th, .item-list td {
+            text-align: left;
+            padding: 12px; /* Increase padding for more space */
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle; /* Ensure vertical alignment in the center */
+            font-size: 16px; /* Increase font size for list view */
+        }
+        .item-list th {
+            background-color: #e0e0e0; /* Grey background for table header */
+            cursor: default; /* No pointer cursor on header */
+        }
+        .item-list tr:hover th {
+            background-color: #e0e0e0; /* Prevent hover effect on header */
+        }
+        .item-list tr {
+            cursor: pointer; /* Hand cursor for rows */
+            transition: background-color 0.3s;
+        }
+        .item-list tr:hover {
+            background-color: #cce7ff; /* Light blue background color on hover */
+        }
+        .item-list .status-icon {
+            text-align: center;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Card View Styles */
+        .item-cards {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: #f4f4f9;
+            padding: 24px; /* Increase padding for more space */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative; /* To position the icon */
+            cursor: pointer; /* Hand cursor */
+            transition: background-color 0.3s;
+            font-size: 16px; /* Increase font size for card view */
+        }
+        .card:hover {
+            background-color: #cce7ff; /* Light blue background color on hover */
+        }
+        .card .status-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px; /* Increase status icon size */
+            cursor: pointer;
+        }
+        .card .when-text {
+            font-size: 14px; /* Smaller font size for "WHEN" text */
+            color: #666; /* Optional: slightly dim the color to differentiate it */
+        }
+
+        /* Modal Styling */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            font-size: 16px; /* Increase font size for modal content */
+        }
+        .modal-content input, .modal-content textarea {
+            width: calc(100% - 40px);
+            margin-bottom: 10px;
+            padding: 12px; /* Increase padding for inputs */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px; /* Increase input font size */
+        }
+        .modal-content textarea {
+            resize: vertical;
+        }
+        .modal-content button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4A90E2;
+            color: white;
+            font-size: 16px; /* Increase button font size */
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        .modal-content button:hover {
+            background-color: #357ABD;
+        }
+        .modal-content #save-item {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+        .modal-content #cancel {
+            background-color: #f44336;
+        }
+        .modal-content #cancel:hover {
+            background-color: #d32f2f;
+        }
+        .empty-message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #888;
+        }
+
+        /* New styles for the help icon */
+        .help-icon {
+            font-size: 18px;
+            color: #808080; /* Set the initial color to grey */
+            cursor: pointer;
+            margin-left: 10px;
+            vertical-align: middle;
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        .help-icon:hover {
+            color: #4A90E2; /* Change color on hover to blue (or any color you prefer) */
+        }
+
+
+        /* Modal Styling for the Help Modal */
+        #help-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .help-modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+        }
+        .help-modal-content p {
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .help-modal-content button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4A90E2;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .help-modal-content button:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-parking"></i>Stand-up Parking Lot</h1>
+            <div>
+                <button id="add-item">Add Parking Lot Item</button>
+                <i class="fas fa-question-circle help-icon" id="help-icon"></i>
+            </div>
+        </div>
+        <div class="controls">
+            <div class="filters">
+                <select id="filter-select">
+                    <option value="all">Show All</option>
+                    <option value="open">Show Open</option>
+                    <option value="closed">Show Closed</option>
+                </select>
+                <select id="sort-select">
+                    <option value="newest" selected>Newest to Oldest</option>
+                    <option value="oldest">Oldest to Newest</option>
+                </select>
+            </div>
+            <div class="view-toggle">
+                <i id="list-view" class="fas fa-list active"></i>
+                <i id="card-view" class="fas fa-th"></i>
+            </div>
+        </div>
+        <table id="items" class="item-list">
+            <thead>
+                <tr>
+                    <th>WHO</th>
+                    <th>WHAT</th>
+                    <th>WHEN</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="cards" class="item-cards"></div>
+        <div id="empty-message" class="empty-message" style="display: none;">All parking spaces are empty!</div>
+    </div>
+
+    <!-- Modal for Adding/Editing Items -->
+    <div id="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Add Parking Lot Item</h2>
+            <input type="text" id="who" placeholder="Who" required>
+            <textarea id="what" placeholder="What" rows="4" required></textarea>
+            <button id="cancel">Cancel</button>
+            <button id="save-item">Save Item</button>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal">
+        <div class="help-modal-content">
+            <h2>About Stand-up Parking Lot</h2>
+            <p>
+                The Stand-up Parking Lot extension helps teams  manage and track items that are 
+                raised during daily standup meetings but can't be immediately addressed. 
+                These "parking lot" items can be marked as open or closed, 
+                edited, and tracked until they are resolved. 
+                This extension provides a simple interface to organize these items, 
+                ensuring that nothing important is forgotten or overlooked during your daily workflow.
+            </p>
+            <p>
+                <a href="https://www.pmgizmo.com" target="_blank">https://www.pmgizmo.com</a><br>
+                <a href="mailto:stevetheproductmanager@gmail.com">stevetheproductmanager@gmail.com</a><br>
+                © 2024 Steve Burns
+            </p>
+            <button id="close-help">Close</button>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
