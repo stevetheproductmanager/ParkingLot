@@ -2,7 +2,7 @@ During your standup, topics often get shifted from the main chat to the parking 
 
 Before your standup starts, open the extension and you can easily track and close parking lot items including WHO and WHAT. Come back to the parking lot at the end, and close out the topics as you can.
 
-- Table lList view and card view.
+- Table list view and card view options
 - Add new parking lot items
 - Edit parking lot items
 - Delete parking lot items
