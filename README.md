@@ -11,13 +11,17 @@ Before your standup starts, open the extension and you can easily track and clos
 - Show all, open or closed parking lot items
 - Track the date/time of open, close and edits
   
-List view: 
+List view 
+
 ![image](https://github.com/user-attachments/assets/b3cd8167-c51b-493b-85d2-4da89468d270)
 Card View
+
 ![image](https://github.com/user-attachments/assets/bf64fcef-ad0b-4b86-a5a9-6e4e08ede2b9)
 Add Item
+
 ![image](https://github.com/user-attachments/assets/1c8a13e1-6cb0-419b-b66d-3a2ece74b3a8)
 Edit Item
+
 ![image](https://github.com/user-attachments/assets/ce0e2ba0-9ab4-4e5e-8b19-f792e21a9639)
 
 
