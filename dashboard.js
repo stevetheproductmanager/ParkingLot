@@ -300,4 +300,4 @@ document.addEventListener('DOMContentLoaded', () => {
             helpModal.style.display = 'none';
         }
     });
-});
+}); 
