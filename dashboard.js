@@ -168,6 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fas ${item.status === 'open' ? 'fa-check-circle' : 'fa-times-circle'}"
                    style="color: ${item.status === 'open' ? 'green' : 'red'}; cursor: pointer;"
                    title="${item.status === 'open' ? 'Mark as closed' : 'Mark as open'}"></i>
+                <i class="fas fa-trash-alt"
+                   style="color: #808080; cursor: pointer; margin-left: 10px;"
+                   title="Delete item"></i>
             </td>
         `;
 
@@ -177,9 +180,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Make the status icon clickable to toggle the status
-        row.querySelector('.status-icon i').addEventListener('click', (event) => {
+        row.querySelector('.fa-check-circle, .fa-times-circle').addEventListener('click', (event) => {
             event.stopPropagation(); // Prevents row click from triggering the edit modal
             toggleStatus(originalIndex);
+        });
+
+        // Make the trash icon clickable to delete the item
+        row.querySelector('.fa-trash-alt').addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevents row click from triggering the edit modal
+            deleteItem(originalIndex);
         });
 
         itemsTableBody.appendChild(row);
@@ -202,6 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fas ${item.status === 'open' ? 'fa-check-circle' : 'fa-times-circle'}"
                    style="color: ${item.status === 'open' ? 'green' : 'red'}; cursor: pointer;"
                    title="${item.status === 'open' ? 'Mark as closed' : 'Mark as open'}"></i>
+                <i class="fas fa-trash-alt"
+                   style="color: #808080; cursor: pointer; margin-left: 10px;"
+                   title="Delete item"></i>
             </span>
         `;
 
@@ -211,9 +223,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Make the status icon clickable to toggle the status
-        cardDiv.querySelector('.status-icon i').addEventListener('click', (event) => {
+        cardDiv.querySelector('.fa-check-circle, .fa-times-circle').addEventListener('click', (event) => {
             event.stopPropagation();
             toggleStatus(originalIndex);
+        });
+
+        // Make the trash icon clickable to delete the item
+        cardDiv.querySelector('.fa-trash-alt').addEventListener('click', (event) => {
+            event.stopPropagation();
+            deleteItem(originalIndex);
         });
 
         cardsDiv.appendChild(cardDiv);
@@ -250,6 +268,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 items[index].dateClosed = null;
                 // Do not set dateEdited here, since reopening should not be considered as "Updated"
             }
+            chrome.storage.sync.set({ parkingLotItems: items }, function() {
+                displayItems(items);
+            });
+        });
+    }
+
+    function deleteItem(index) {
+        chrome.storage.sync.get(['parkingLotItems'], function(result) {
+            let items = result.parkingLotItems || [];
+            items.splice(index, 1); // Remove the item from the array
             chrome.storage.sync.set({ parkingLotItems: items }, function() {
                 displayItems(items);
             });
